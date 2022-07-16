@@ -13,5 +13,6 @@ export const SCHEMA = gql`
 
     type Query {
         drivers: [Driver!]
+        driver(id: Int!): Driver
     }
 `;
