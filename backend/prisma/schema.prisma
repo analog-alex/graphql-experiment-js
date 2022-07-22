@@ -10,9 +10,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// models
+
 model Driver {
-  id          Int       @id @default(autoincrement())   
-  name        String 
-  username    String
-  email       String
+  id       Int    @id @default(autoincrement())
+  name     String
+  username String
+  email    String
+  Rota     Rota?
+}
+
+model Rota {
+  id        Int      @id @default(autoincrement())
+  name      String
+  driver_id Int      @unique
+  Driver    Driver   @relation(fields: [driver_id], references: [id])
+  Clients   Client[]
+}
+
+model Client {
+  name    String
+  rota_id Int
+  address String
+  Rota    Rota   @relation(fields: [rota_id], references: [id])
+
+  @@id([name, rota_id])
 }

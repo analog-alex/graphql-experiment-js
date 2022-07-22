@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server'
+import { gql } from 'apollo-server';
 
 /**
  *  graphQL schema definition (this can go to a seperate .graphql file)
@@ -9,6 +9,12 @@ export const SCHEMA = gql`
         name: String,
         username: String,
         email: String
+        rota: Rota
+    }
+
+    type Rota {
+        id: ID!
+        name: String
     }
 
     type Query {
