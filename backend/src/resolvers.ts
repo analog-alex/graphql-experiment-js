@@ -1,11 +1,17 @@
 import { Driver } from ".prisma/client";
-import { drivers, driver, rotaByDriver } from "./db";
+import { drivers, driversByName, driver, rotaByDriver } from "./db";
 
 // resolver logic
 
 export const resolvers = {
     Query: {
-        drivers: async () => await drivers(),
+        drivers: async (_: object, { name }: { name: string }) => {
+            if(name) {
+                return await driversByName(name)
+            } else {
+                return await drivers()
+            }
+        },
         driver: async (_: object, { id }: { id: number }) => {
             return await driver(id)
         }
