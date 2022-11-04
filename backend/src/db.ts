@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 // TODO refactor with TypeDI in the future
 
 
-class DriversRpository {
+class DriversRepository {
   static async findAll(): Promise<Driver[]> {
     return await prisma.driver.findMany()
   }
@@ -27,13 +27,21 @@ class RotasRepository {
   static async findByDriverId(driverId: number): Promise<Rota> {
     return await prisma.rota.findFirst({ where: { driver_id: driverId } })
   }
+
+  static async findByDriverIds(driverIds: number[]): Promise<Rota[]> {
+    return await prisma.rota.findMany({ where: { driver_id: {in: driverIds} } })
+  }
 }
 
 class ClientsRepository {
   static async findAllByRotaId(rotaId: number): Promise<Client[]> {
     return await prisma.client.findMany({ where: { rota_id: rotaId } })
   }
+
+  static async findAllByRotaIds(rotaIds: number[]):  Promise<Client[]> {
+    return await prisma.client.findMany({ where: { rota_id: {in: rotaIds}} })
+  }
 }
 
 
-export { DriversRpository, RotasRepository, ClientsRepository }
+export { DriversRepository, RotasRepository, ClientsRepository }

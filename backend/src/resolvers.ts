@@ -1,5 +1,10 @@
 import { Driver, Rota } from ".prisma/client"
-import { DriversRpository, RotasRepository, ClientsRepository } from "./db"
+import { DriversRepository, RotasRepository, ClientsRepository } from "./db"
+import DataLoader from "dataloader";
+
+// dataloaders to avoid n + 1 problem
+
+const driversLoader = new DataLoader((keys: number[]) => RotasRepository.findByDriverIds(keys))
 
 // resolver logic
 
@@ -7,19 +12,19 @@ export const resolvers = {
   Query: {
     drivers: async (_: object, { name }: { name: string }) => {
       if (name) {
-        return await DriversRpository.findByName(name)
+        return await DriversRepository.findByName(name)
       } else {
-        return await DriversRpository.findAll()
+        return await DriversRepository.findAll()
       }
     },
     driver: async (_: object, { id }: { id: number }) => {
-      return await DriversRpository.findById(id)
+      return await DriversRepository.findById(id)
     },
     rotas: async() => RotasRepository.findAll(),
   },
   Driver: {
     rota: async (parent: Driver) => {
-      return await RotasRepository.findByDriverId(parent.id)
+      return await driversLoader.load(parent.id)
     }
   },
   Rota: {
